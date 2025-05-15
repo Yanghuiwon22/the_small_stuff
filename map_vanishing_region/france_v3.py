@@ -15,6 +15,7 @@ def draw_map():
 
     output_path = "output/france_final.png"
     france = gpd.read_file('data/france_shp/france.shp')
+    france.to_crs('epsg:2154', inplace=True)  # WGS 84 좌표계로 변환
 
     # 2. 인구 변화율 데이터 준비
     population_change_data = {
@@ -81,7 +82,7 @@ def draw_map():
     imagebox = OffsetImage(compass_img, zoom=0.4)  # zoom으로 크기 조정
 
     # (x, y) 위치 지정 - axes fraction 기준 (예: 오른쪽 아래)
-    ab = AnnotationBbox(imagebox, (0.0, 0.88),  # x, y in axes fraction
+    ab = AnnotationBbox(imagebox, (0.0, 0.96),  # x, y in axes fraction
                         xycoords='axes fraction',
                         frameon=False)
     ax.add_artist(ab)

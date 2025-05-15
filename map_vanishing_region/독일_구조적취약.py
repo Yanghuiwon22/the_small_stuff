@@ -1,3 +1,5 @@
+from unittest.mock import inplace
+
 import geopandas as gpd
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -75,17 +77,20 @@ def load_map():
     imagebox = OffsetImage(compass_img, zoom=0.4)  # zoom으로 크기 조정
 
     # (x, y) 위치 지정 - axes fraction 기준 (예: 오른쪽 아래)
-    ab = AnnotationBbox(imagebox, (-0.2, 0.85),  # x, y in axes fraction
+    ab = AnnotationBbox(imagebox, (-0.2, 0.92),  # x, y in axes fraction
                         xycoords='axes fraction',
                         frameon=False)
     ax.add_artist(ab)
 
     base_shp.plot(ax=ax, color='lightgray', edgecolor='gray')
+    base_shp.to_crs('EPSG:25832', inplace=True)
 
     # plt.tight_layout()
 
     # colors = ['green' if stage == 'D' else 'lightgray' for stage in green_land_shp['stage']]
     green_land_shp.plot(ax=ax, color=green_land_shp['color'], edgecolor='darkgray', legend=True,)
+    green_land_shp.to_crs('EPSG:25832', inplace=True)
+
     # fig.subplots_adjust(left=0.07, right=1.13, top=0.95, bottom=0.05)
 
     legend_patches = [
@@ -109,8 +114,8 @@ def load_map():
     fig.subplots_adjust(left=0.07, right=0.7, top=0.95, bottom=0.05)
 
     plt.axis('off')  # 축 제거
-    # plt.show()
-    plt.savefig('output/독일_최종본2.png', dpi=300)
+    plt.savefig('output/독일_최종본_25832.png', dpi=300)
+    plt.show()
 #
 def main():
     os.makedirs('output', exist_ok=True)

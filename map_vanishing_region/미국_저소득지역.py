@@ -59,6 +59,7 @@ def load_usa_map():
 
     # Load the USA map shapefile
     oklahoma_tracts = gpd.read_file("data/merged_us_shp/merged_us_states.shp")
+    oklahoma_tracts.to_crs(epsg=5070, inplace=True)
     oklahoma_tracts['GEOID'] = oklahoma_tracts['GEOID'].astype(str)
 
     us_shp_file = gpd.read_file("data/us_shp/cb_2018_us_division_500k.shp")
@@ -94,6 +95,7 @@ def load_usa_map():
     custom_cmap = ListedColormap(custom_colors)
 
     merged_gdf = gpd.GeoDataFrame(merged_data, geometry='geometry')
+    merged_gdf.to_crs(epsg=5070, inplace=True)
     merged_gdf.plot(
         column='LOWMOD_PCT',
         ax=ax,
@@ -118,8 +120,8 @@ def load_usa_map():
     cbar_ax.tick_params(labelsize=30)
 
     plt.axis('off')  # 축 제거
-    # plt.show()
-    plt.savefig('output/미국_최종본2.png', dpi=300)
+    plt.savefig('output/미국_최종본3.png', dpi=300)
+    plt.show()
 
 def main():
     # 1. xlsx to csv
