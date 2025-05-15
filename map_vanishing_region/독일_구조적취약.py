@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import matplotlib.patches as mpatches
+import os
+import matplotlib.image as mpimg
+from matplotlib.offsetbox import OffsetImage, AnnotationBbox
 
 plt.rcParams['font.family'] ='Malgun Gothic'
 plt.rcParams['axes.unicode_minus'] =False
@@ -11,7 +14,7 @@ def load_map():
     #     # df = pd.read_csv("../data/LMI.csv")
     #
     # Load the Germany map shapefile
-    base_shp = gpd.read_file("georef-germany-kreis@public/georef-germany-kreis-millesime.shp")
+    base_shp = gpd.read_file("data/germany_shp/georef-germany-kreis-millesime.shp")
     print(base_shp.crs)
 
     base_shp_table = base_shp.copy()
@@ -68,34 +71,46 @@ def load_map():
 
     # Plotting
     fig, ax = plt.subplots(figsize=(24, 16))
+    compass_img = mpimg.imread('data/compass.png')
+    imagebox = OffsetImage(compass_img, zoom=0.4)  # zoom으로 크기 조정
+
+    # (x, y) 위치 지정 - axes fraction 기준 (예: 오른쪽 아래)
+    ab = AnnotationBbox(imagebox, (-0.2, 0.85),  # x, y in axes fraction
+                        xycoords='axes fraction',
+                        frameon=False)
+    ax.add_artist(ab)
 
     base_shp.plot(ax=ax, color='lightgray', edgecolor='gray')
 
+    # plt.tight_layout()
+
     # colors = ['green' if stage == 'D' else 'lightgray' for stage in green_land_shp['stage']]
     green_land_shp.plot(ax=ax, color=green_land_shp['color'], edgecolor='darkgray', legend=True,)
+    # fig.subplots_adjust(left=0.07, right=1.13, top=0.95, bottom=0.05)
+
     legend_patches = [
-        mpatches.Patch(color='#0B7a26', label='D 지원 지역'),
-        mpatches.Patch(color='#81c147', label='C&D 혼합 지역'),
-        mpatches.Patch(color='orange', label='C 지원 지역'),
-        mpatches.Patch(color='yellow', label='국경 보조금이 있는 C 지역'),
-        mpatches.Patch(color='#348171', label='일부 D / 일부 비지원 지역'),
-        mpatches.Patch(color='none', label='비지원 지역', edgecolor='black')
+        mpatches.Patch(color='#0B7a26', label='D grade'),
+        mpatches.Patch(color='#81c147', label='C+D grade'),
+        mpatches.Patch(color='orange', label='C grade with \nborder bonus (para. 184)'),
+        mpatches.Patch(color='yellow', label='C grade'),
+        mpatches.Patch(color='#348171', label='D+Non grade'),
+        mpatches.Patch(color='lightgray', label='Non area')
     ]
+    # ax.legend(handles=legend_patches, loc='lower right', frameon=False, bbox_to_anchor=(0.9, 0.15))
+
     ax.legend(
         handles=legend_patches,
-        title='GRW 지원 지역 구분 (2022-2027)',
-        loc='lower right',
-        frameon=True,
-        framealpha=1
+        title='Classification of GRW \nSupport Regions (2022 – 2027)',
+        title_fontsize=30,
+        loc=[1.2, 0.05],
+        frameon=False,
+        fontsize=30,
     )
+    fig.subplots_adjust(left=0.07, right=0.7, top=0.95, bottom=0.05)
 
     plt.axis('off')  # 축 제거
-    plt.tight_layout()
     # plt.show()
-
-
-
-    plt.savefig('output/독일_최종본.png', dpi=300, bbox_inches='tight')
+    plt.savefig('output/독일_최종본2.png', dpi=300)
 #
 def main():
     os.makedirs('output', exist_ok=True)
