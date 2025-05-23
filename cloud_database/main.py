@@ -116,6 +116,7 @@ def get_scheduler_status():
     }
 
 def download_ultra_short_data():
+    print("🐻기상 데이터 수집 시작")
     os.makedirs("data", exist_ok=True)  # 데이터 저장 폴더 생성
     region_code_df = pd.read_csv('지역_코드_정리.csv', encoding='utf-8-sig')
     base_date, base_time = calculate_base_time()
@@ -160,6 +161,8 @@ def download_ultra_short_data():
         data_final.drop_duplicates(inplace=True)
         data_final.to_csv(os.path.join('data', now_year, f"{now_year}_{now_month}.csv"), mode='a', header=False,
                           index=False)
+    print(f"🐻✅기상 데이터 수집 완료 - {base_date} {base_time} 기준")
+
 
 scheduler.add_job(
     func=download_ultra_short_data,
