@@ -1,0 +1,4 @@
+year,month,day,doy,radn,maxt,mint,rain,tavg,humid,wind,winddir,sunhours,latitude,longitude,altitude
+2001,12,21,355,,,,0.0,,,,,,37.8844,126.7625,31.0
+2001,12,29,363,,,,0.0,,,,,,37.8844,126.7625,31.0
+2001,12,31,365,,,,0.0,,,,,,37.8844,126.7625,31.0
