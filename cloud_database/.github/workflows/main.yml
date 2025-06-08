@@ -1,0 +1,44 @@
+name: cloud_database
+on:
+  schedule:
+    - cron: '11 * * * *' # 매시간 11분에 실행
+  workflow_dispatch:
+
+jobs:
+  run-python-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # requirements.txt가 있는 경우
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    - name: Run Python script
+      run: |
+        python get_cloud_data.py
+
+      env:
+        # 환경 변수가 필요한 경우 (GitHub Secrets 사용)
+        API_KEY: ${{ secrets.CLOUD_DATABASE }}
+
+    - name: Commit and push changes
+      run: |
+        git config user.name "yanghuiwon22"
+        git config user.email "hannah4212@naver.com"
+        git add -A
+        git commit -m "Update data from get_cloud_data.py" || echo "No changes to commit"
+        git push
+      env:
+        TZ: Asia/Seoul  # 환경 변수로 KST 지정
+        # GitHub token이 있어야 push 가능
+        GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
